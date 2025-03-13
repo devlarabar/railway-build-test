@@ -1,0 +1,20 @@
+[tool.poetry]
+name = "railway-build-test"
+version = "0.1.0"
+description = ""
+authors = ["Lara <lsalsham@hotmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+
+
+[[tool.poetry.source]]
+name = "dummypypi"
+url = "https://arriving-oriented-whale.ngrok-free.app/"
+priority = "explicit"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
