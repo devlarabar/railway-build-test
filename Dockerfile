@@ -7,7 +7,7 @@ WORKDIR /app
 RUN pip install poetry
 COPY pyproject.toml poetry.lock /app/
 # Add a package source and configure its authentication credentials
-RUN poetry source add --priority=explicit nucleus https://ion8-nucleus.up.railway.app/
+# RUN poetry source add --priority=explicit nucleus https://ion8-nucleus.up.railway.app/
 # These will be injected by Railway at build time:
 # https://docs.railway.com/guides/dockerfiles#using-variables-at-build-time
 # ARG POETRY_HTTP_BASIC_DUMMY_USERNAME
