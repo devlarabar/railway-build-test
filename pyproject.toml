@@ -10,10 +10,6 @@ python = "^3.12"
 httpx = "^0.28.1"
 
 
-[[tool.poetry.source]]
-name = "dummypypi"
-url = "https://arriving-oriented-whale.ngrok-free.app/"
-priority = "explicit"
 
 
 [build-system]
