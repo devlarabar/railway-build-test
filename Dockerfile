@@ -15,6 +15,7 @@ RUN poetry source add --priority=explicit dummypypi https://arriving-oriented-wh
 # RUN poetry config http-basic.dummypypi $POETRY_HTTP_BASIC_DUMMY_USERNAME $POETRY_HTTP_BASIC_DUMMY_PASSWORD
 # Install dependencies
 RUN poetry config --list
+RUN poetry lock
 RUN poetry install --no-root --no-interaction --no-ansi -vvv
 
 # Copy the whole project into the container
