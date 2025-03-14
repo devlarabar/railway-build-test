@@ -7,7 +7,7 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.12"
-zoho-clients = {version = "^1.0.0", source = "dummypypi"}
+zoho-clients = {version = "^1.2.3", source = "dummypypi"}
 
 
 [[tool.poetry.source]]

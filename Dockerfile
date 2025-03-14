@@ -30,4 +30,4 @@ ENV PORT=8888
 ENV HOST=0.0.0.0
 
 # Run the container
-CMD ["poetry", "run", "uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8888", "--header", "servicename:test", "--lifespan", "on"]
+CMD ["poetry", "run", "app.main:app", "--host", "0.0.0.0", "--port", "8888"]
