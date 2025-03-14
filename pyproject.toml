@@ -7,14 +7,17 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.12"
-zoho-clients = {version = "^1.2.3", source = "dummypypi"}
+zoho-clients = {version = "^1.4.0", source = "nucleus"}
 
 
 [[tool.poetry.source]]
-name = "dummypypi"
-url = "https://arriving-oriented-whale.ngrok-free.app/"
-priority = "explicit"
+name = "nucleus"
+url = "https://ion8-nucleus.up.railway.app/"
+priority = "primary"
 
+[[tool.poetry.source]]
+name = "PyPI"
+priority = "explicit"
 
 [build-system]
 requires = ["poetry-core"]
