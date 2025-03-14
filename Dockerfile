@@ -5,18 +5,18 @@ WORKDIR /app
 
 # Install Poetry and dependencies
 RUN pip install poetry
-COPY pyproject.toml poetry.lock /app/
+# COPY pyproject.toml poetry.lock /app/
 # Add a package source and configure its authentication credentials
-RUN poetry source add --priority=explicit dummypypi https://arriving-oriented-whale.ngrok-free.app
+# RUN poetry source add --priority=explicit nucleus https://ion8-nucleus.up.railway.app/
 # These will be injected by Railway at build time:
 # https://docs.railway.com/guides/dockerfiles#using-variables-at-build-time
 # ARG POETRY_HTTP_BASIC_DUMMY_USERNAME
 # ARG POETRY_HTTP_BASIC_DUMMY_PASSWORD
 # RUN poetry config http-basic.dummypypi $POETRY_HTTP_BASIC_DUMMY_USERNAME $POETRY_HTTP_BASIC_DUMMY_PASSWORD
 # Install dependencies
-RUN poetry config --list
-RUN poetry lock
-RUN poetry install --no-root --no-interaction --no-ansi -vvv
+# RUN poetry config --list
+# RUN poetry lock
+# RUN poetry install --no-root --no-interaction --no-ansi -vvv
 
 # Copy the whole project into the container
 COPY . /app
@@ -30,4 +30,5 @@ ENV PORT=8888
 ENV HOST=0.0.0.0
 
 # Run the container
-CMD ["poetry", "run", "app.main:app", "--host", "0.0.0.0", "--port", "8888"]
+# CMD ["poetry", "run", "app.main:app", "--host", "0.0.0.0", "--port", "8888"]
+CMD ["poetry", "run", "python", "/app/app/run.py"]

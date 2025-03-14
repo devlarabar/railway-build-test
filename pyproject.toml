@@ -8,6 +8,8 @@ readme = "README.md"
 [tool.poetry.dependencies]
 python = "^3.12"
 zoho-clients = {version = "^1.4.0", source = "nucleus"}
+passlib = "^1.7.4"
+dotenv = "^0.9.9"
 
 
 [[tool.poetry.source]]
