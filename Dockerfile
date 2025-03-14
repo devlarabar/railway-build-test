@@ -10,9 +10,9 @@ COPY pyproject.toml poetry.lock /app/
 RUN poetry source add --priority=explicit dummypypi https://arriving-oriented-whale.ngrok-free.app
 # These will be injected by Railway at build time:
 # https://docs.railway.com/guides/dockerfiles#using-variables-at-build-time
-ARG POETRY_HTTP_BASIC_DUMMY_USERNAME
-ARG POETRY_HTTP_BASIC_DUMMY_PASSWORD
-RUN poetry config http-basic.dummypypi $POETRY_HTTP_BASIC_DUMMY_USERNAME $POETRY_HTTP_BASIC_DUMMY_PASSWORD
+# ARG POETRY_HTTP_BASIC_DUMMY_USERNAME
+# ARG POETRY_HTTP_BASIC_DUMMY_PASSWORD
+# RUN poetry config http-basic.dummypypi $POETRY_HTTP_BASIC_DUMMY_USERNAME $POETRY_HTTP_BASIC_DUMMY_PASSWORD
 # Install dependencies
 RUN poetry install --without dev --no-root --no-interaction --no-ansi
 
