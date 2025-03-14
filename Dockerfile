@@ -14,6 +14,9 @@ COPY pyproject.toml poetry.lock /app/
 # ARG POETRY_HTTP_BASIC_DUMMY_PASSWORD
 # RUN poetry config http-basic.dummypypi $POETRY_HTTP_BASIC_DUMMY_USERNAME $POETRY_HTTP_BASIC_DUMMY_PASSWORD
 # Install dependencies
+ENV POETRY_HTTP_BASIC_NUCLEUS_USERNAME=${POETRY_HTTP_BASIC_NUCLEUS_USERNAME}
+ENV POETRY_HTTP_BASIC_NUCLEUS_PASSWORD=${POETRY_HTTP_BASIC_NUCLEUS_PASSWORD}
+
 RUN poetry config --list
 RUN poetry lock
 RUN poetry install --no-root --no-interaction --no-ansi -vvv
