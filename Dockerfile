@@ -38,5 +38,7 @@ ENV LOGLEVEL="DEBUG"
 ENV PORT=8888
 ENV HOST=0.0.0.0
 
+RUN echo $POETRY_HTTP_BASIC_NUCLEUS_USERNAME
+
 # Run the application using Poetry and Uvicorn
 CMD poetry run uvicorn app.main:app --host $HOST --port $PORT --header servicename:railway-build-test --lifespan on
