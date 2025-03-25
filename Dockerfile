@@ -10,7 +10,10 @@ RUN pip install poetry
 # Add Poetry configuration for private PyPI (using build arguments for secrets)
 ARG POETRY_HTTP_BASIC_DUMMYPYPI_USERNAME
 ARG POETRY_HTTP_BASIC_DUMMYPYPI_PASSWORD
-RUN poetry config http-basic.dummypypi $POETRY_HTTP_BASIC_DUMMYPYPI_USERNAME $POETRY_HTTP_BASIC_DUMMYPYPI_PASSWORD > /dev/null 2>&1
+# ENV POETRY_HTTP_BASIC_DUMMYPYPI_USERNAME=${POETRY_HTTP_BASIC_DUMMYPYPI_USERNAME}
+# ENV POETRY_HTTP_BASIC_DUMMYPYPI_PASSWORD=${POETRY_HTTP_BASIC_DUMMYPYPI_PASSWORD}
+
+RUN echo $POETRY_HTTP_BASIC_DUMMYPYPI_USERNAME
 
 # Copy the pyproject.toml and poetry.lock to configure dependencies
 COPY pyproject.toml poetry.lock /app/
