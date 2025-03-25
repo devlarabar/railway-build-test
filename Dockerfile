@@ -1,44 +1,39 @@
-# Base image
-FROM python:3.12-slim
+# Stage 1: Build stage
+FROM python:3.12-slim AS build-stage
 
+# Set the working directory
 WORKDIR /app
 
-# Install Poetry and dependencies
+# Install Poetry and dependencies for private PyPI
 RUN pip install poetry
+
+# Add Poetry configuration for private PyPI (using build arguments for secrets)
+ARG POETRY_HTTP_BASIC_DUMMYPYPI_USERNAME
+ARG POETRY_HTTP_BASIC_DUMMYPYPI_PASSWORD
+RUN poetry config http-basic.dummypypi $POETRY_HTTP_BASIC_DUMMYPYPI_USERNAME $POETRY_HTTP_BASIC_DUMMYPYPI_PASSWORD > /dev/null 2>&1
+
+# Copy the pyproject.toml and poetry.lock to configure dependencies
 COPY pyproject.toml poetry.lock /app/
-# Add a package source and configure its authentication credentials
-# RUN poetry source add --priority=explicit nucleus https://ion8-nucleus.up.railway.app/
-# These will be injected by Railway at build time:
-# https://docs.railway.com/guides/dockerfiles#using-variables-at-build-time
-# ARG POETRY_HTTP_BASIC_DUMMY_USERNAME
-# ARG POETRY_HTTP_BASIC_DUMMY_PASSWORD
-# RUN poetry config http-basic.dummypypi $POETRY_HTTP_BASIC_DUMMY_USERNAME $POETRY_HTTP_BASIC_DUMMY_PASSWORD
-# Install dependencies
-ENV POETRY_HTTP_BASIC_NUCLEUS_USERNAME=${POETRY_HTTP_BASIC_NUCLEUS_USERNAME}
-ENV POETRY_HTTP_BASIC_NUCLEUS_PASSWORD=${POETRY_HTTP_BASIC_NUCLEUS_PASSWORD}
 
+# Install dependencies (without dev dependencies)
+RUN poetry install --no-root --no-interaction --no-ansi
 
-ENV POETRY_HTTP_BASIC_DUMMYPYPI_USERNAME=${POETRY_HTTP_BASIC_DUMMYPYPI_USERNAME}
-RUN echo $POETRY_HTTP_BASIC_DUMMYPYPI_USERNAME
+# Stage 2: Final stage
+FROM python:3.12-slim AS final-stage
 
+# Set the working directory for the final stage
+WORKDIR /app
 
-ENV hi=hello
-RUN echo $hi
+# Copy the necessary files from the build stage (without sensitive build data)
+COPY --from=build-stage /app /app
 
-RUN poetry config --list
-RUN poetry lock
-RUN poetry install --no-root --no-interaction --no-ansi -vvv
-
-# Copy the whole project into the container
-COPY . /app
-
-# The container will run in this port
+# Expose the port your app runs on
 EXPOSE 8888
 
-# Set environment variables for app
+# Set environment variables for the application
 ENV LOGLEVEL="DEBUG"
 ENV PORT=8888
 ENV HOST=0.0.0.0
 
-# Run the container
-CMD ["poetry", "run", "app.main:app", "--host", "0.0.0.0", "--port", "8888"]
+# Run the application using Poetry and Uvicorn
+CMD ["poetry", "run", "uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8888", "--header", "servicename:my_service", "--lifespan", "on"]
