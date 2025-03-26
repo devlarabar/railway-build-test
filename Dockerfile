@@ -39,7 +39,7 @@ COPY --from=build /app /app
 # Create a non-root user, pass them ownership of /app, and switch to this user
 ENV USER appuser
 RUN useradd -m ${USER}
-RUN chown -R appuser:${USER} /app
+RUN chown -R ${USER}:${USER} /app
 USER ${USER}
 
 # Expose the port and set environment variables
@@ -48,15 +48,6 @@ ENV LOGLEVEL="DEBUG"
 ENV PORT=8888
 ENV HOST=0.0.0.0
 
-# Copy Poetry's installed dependencies (whole directory)
-COPY --from=build /root/.local /home/${USER}/.local
-
-# Ensure Poetry is in the path
-ENV PATH="/home/${USER}/.local/bin:$PATH"
-
-# Debug Poetry installation
-# RUN which poetry && ls -al $(which poetry) && poetry --version
-
 # Run the app
-CMD poetry run uvicorn app.main:app --host $HOST --port $PORT \
+CMD /app/.venv/bin/uvicorn app.main:app --host $HOST --port $PORT \
     --header servicename:railway-build-test --lifespan on
