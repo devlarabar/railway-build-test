@@ -1,77 +1,38 @@
 # Stage 1: Build stage
 FROM python:3.12-slim AS build-stage
 
-# Set up non-root user and drop root permissions for build stage
-ENV USER=builduser
-RUN useradd -ms /bin/bash "${USER}"
-USER ${USER}
-WORKDIR /home/${USER}
-
 # Set the working directory
-# WORKDIR /app
+WORKDIR /app
 
-# Copy local code to the container image
-COPY --chown=${USER}:${USER} app ./app
-COPY --chown=${USER}:${USER} pyproject.toml ./
-COPY --chown=${USER}:${USER} poetry.lock ./
+# Install Poetry
+RUN pip install poetry
 
-# Configure Poetry
+# Configure Nucleus
 ARG POETRY_HTTP_BASIC_NUCLEUS_USERNAME
 ARG POETRY_HTTP_BASIC_NUCLEUS_PASSWORD
-# ARG VIRTUAL_ENVIRONMENT_PATH="/home/${USER}/app/.venv"
-ARG POETRY_VIRTUALENVS_IN_PROJECT=true
-ARG POETRY_VIRTUALENVS_OPTIONS_NO_PIP=true
 
-# Debugging
 ARG POETRY_HTTP_BASIC_DUMMYPYPI_USERNAME
 RUN echo $POETRY_HTTP_BASIC_DUMMYPYPI_USERNAME
-ENV PATH="/home/${USER}/.local/bin:$PATH"
+
+# Copy the pyproject.toml and poetry.lock to configure dependencies
+COPY . /app/
 
 # Install dependencies
-RUN pip install --disable-pip-version-check poetry && \
+RUN poetry config virtualenvs.in-project true && \
     poetry install --no-root --no-interaction --no-ansi
-
-RUN poetry env info --path
-
-RUN ls -al /home/${USER}/ && echo 'print venv?'
-
-RUN poetry show uvicorn
-
 
 # Stage 2: Final stage
 FROM python:3.12-slim AS final-stage
 
-# Set up non-root user for the final stage
-ENV USER=finalbuilduser
-RUN useradd -ms /bin/bash "${USER}"
-
-# Copy the necessary files from the build stage (without sensitive build data)
-
-COPY --from=build-stage /home/builduser /home/${USER}
-# COPY --from=build-stage /home/builduser/app /home/${USER}/app
-# COPY --from=build-stage /home/builduser/.local/bin /home/${USER}/.local/bin
-RUN chown -R ${USER}:${USER} /home/${USER}/app
-RUN chown -R ${USER}:${USER} /home/${USER}/.local/bin
-RUN chown -R ${USER}:${USER} /home/${USER}/.venv
-# RUN chown -R ${USER}:${USER} /home/${USER}/.local/bin
-
-RUN ls -al /home/${USER}/ && echo 'print venv for final?'
-
-RUN ls -al /home/${USER}/.venv/bin && echo 'PRINT VENV INNER'
-
-# Switch to non-root user
-USER ${USER}
-WORKDIR /home/${USER}
+# Create a non-root user
+RUN useradd -m appuser
+USER appuser
 
 # Set the working directory for the final stage
-# WORKDIR /app
+WORKDIR /app
 
-# Make sure final stage has correct paths for Poetry and .venv
-# ENV VIRTUAL_ENV="/home/${USER}/app/.venv"
-# ENV PATH="/home/${USER}/.local/bin:$PATH"
-ENV PATH="/home/${USER}/.local/bin:$PATH"
-ENV VIRTUAL_ENV="/home/${USER}/.venv"
-ENV PATH="${VIRTUAL_ENV}/bin:$PATH"
+# Copy the necessary files from the build stage (without sensitive build data)
+COPY --from=build-stage /app /app
 
 # Expose the port and set environment variables
 EXPOSE 8888
@@ -81,13 +42,6 @@ ENV HOST=0.0.0.0
 
 RUN echo $POETRY_HTTP_BASIC_DUMMYPYPI_USERNAME
 
-RUN echo "Poetry version:" && poetry --version
-RUN poetry show uvicorn
-RUN echo "Uvicorn version:" && /home/${USER}/.venv/bin/uvicorn --version
-
-RUN python -c "import sys; print('\n'.join(sys.path))"
-
 # Run the app
 # CMD poetry run uvicorn app.main:app --host $HOST --port $PORT --header servicename:railway-build-test --lifespan on
-CMD ["/home/${USER}/.venv/bin/uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8888"]
-
+CMD /app/.venv/bin/uvicorn app.main:app --host $HOST --port $PORT
