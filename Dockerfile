@@ -49,11 +49,11 @@ COPY --from=build-stage /home/builduser /home/${USER}
 # COPY --from=build-stage /home/builduser/app /home/${USER}/app
 # COPY --from=build-stage /home/builduser/.local/bin /home/${USER}/.local/bin
 RUN chown -R ${USER}:${USER} /home/${USER}/app
+RUN chown -R ${USER}:${USER} /home/${USER}/.local/bin
+RUN chown -R ${USER}:${USER} /home/${USER}/.venv
 # RUN chown -R ${USER}:${USER} /home/${USER}/.local/bin
 
-RUN pwd && echo 'pwd print'
-RUN dir && echo 'dir print'
-RUN ls /home/${USER}
+RUN ls -al /home/${USER}/ && echo 'print venv for final?'
 
 # Switch to non-root user
 USER ${USER}
