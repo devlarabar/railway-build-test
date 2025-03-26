@@ -48,9 +48,13 @@ ENV LOGLEVEL="DEBUG"
 ENV PORT=8888
 ENV HOST=0.0.0.0
 
-# Install Poetry again - it's no longer available after initiating a new stage
-RUN pip install poetry && which poetry && ls -al $(which poetry)
-ENV PATH="/usr/local/bin:$PATH"
+# Copy Poetry from build stage
+COPY --from=build /usr/local/bin/poetry /usr/local/bin/poetry
+COPY --from=build /root/.local /root/.local
+ENV PATH="/root/.local/bin:$PATH"
+
+# Debug Poetry installation
+RUN which poetry && ls -al $(which poetry) && poetry --version
 
 # Run the app
 CMD poetry run uvicorn app.main:app --host $HOST --port $PORT \
