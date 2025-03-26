@@ -37,9 +37,10 @@ WORKDIR /app
 COPY --from=build /app /app
 
 # Create a non-root user, pass them ownership of /app, and switch to this user
-RUN useradd -m appuser
-RUN chown -R appuser:appuser /app
-USER appuser
+ENV USER appuser
+RUN useradd -m ${USER}
+RUN chown -R appuser:${USER} /app
+USER ${USER}
 
 # Expose the port and set environment variables
 EXPOSE 8888
@@ -47,6 +48,8 @@ ENV LOGLEVEL="DEBUG"
 ENV PORT=8888
 ENV HOST=0.0.0.0
 
+ENV PATH="/app/.venv/bin:/home/${USER}/.local/bin:$PATH"
+
 # Run the app
-CMD /app/.venv/bin/uvicorn app.main:app --host $HOST --port $PORT \
+CMD poetry run uvicorn app.main:app --host $HOST --port $PORT \
     --header servicename:railway-build-test --lifespan on
