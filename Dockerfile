@@ -48,8 +48,8 @@ COPY --from=build-stage /home/builduser /home/${USER}
 RUN chown -R ${USER}:${USER} /home/${USER}/app
 # RUN chown -R ${USER}:${USER} /home/${USER}/.local/bin
 
-RUN pwd
-RUN dir
+RUN pwd && echo 'pwd print'
+RUN dir && echo 'dir print'
 RUN ls /home/${USER}
 
 # Switch to non-root user
