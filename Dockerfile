@@ -57,7 +57,7 @@ RUN chown -R ${USER}:${USER} /home/${USER}/.venv
 
 RUN ls -al /home/${USER}/ && echo 'print venv for final?'
 
-RUN ls -al /home/${USER}/.venv && echo 'PRINT VENV INNER'
+RUN ls -al /home/${USER}/.venv/bin && echo 'PRINT VENV INNER'
 
 # Switch to non-root user
 USER ${USER}
