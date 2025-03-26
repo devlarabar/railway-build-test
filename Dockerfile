@@ -55,7 +55,7 @@ COPY --from=build /root/.local /home/${USER}/.local
 ENV PATH="/home/${USER}/.local/bin:$PATH"
 
 # Debug Poetry installation
-RUN which poetry && ls -al $(which poetry) && poetry --version
+# RUN which poetry && ls -al $(which poetry) && poetry --version
 
 # Run the app
 CMD poetry run uvicorn app.main:app --host $HOST --port $PORT \
