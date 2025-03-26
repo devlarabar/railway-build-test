@@ -48,5 +48,5 @@ ENV PORT=8888
 ENV HOST=0.0.0.0
 
 # Run the app
-CMD poetry run uvicorn app.main:app --host $HOST --port $PORT \
+CMD /app/.venv/bin/uvicorn app.main:app --host $HOST --port $PORT \
     --header servicename:railway-build-test --lifespan on
