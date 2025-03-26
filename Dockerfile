@@ -28,8 +28,6 @@ RUN pip install --disable-pip-version-check poetry && \
     poetry config virtualenvs.in-project true && \
     poetry install --no-root --no-interaction --no-ansi
 
-RUN which poetry
-
 
 # Stage 2: Final stage
 FROM python:3.12-slim AS final-stage
@@ -40,7 +38,9 @@ RUN useradd -ms /bin/bash "${USER}"
 
 # Copy the necessary files from the build stage (without sensitive build data)
 COPY --from=build-stage /home/builduser/app /home/${USER}/app
+COPY --from=build-stage /home/builduser/.venv /home/${USER}/.venv
 RUN chown -R ${USER}:${USER} /home/${USER}/app
+RUN chown -R ${USER}:${USER} /home/${USER}/.venv
 
 # Switch to non-root user
 USER ${USER}
@@ -66,5 +66,5 @@ RUN echo $POETRY_HTTP_BASIC_DUMMYPYPI_USERNAME
 
 # Run the app
 # CMD poetry run uvicorn app.main:app --host $HOST --port $PORT --header servicename:railway-build-test --lifespan on
-CMD ["/home/finalbuilduser/app/.venv/bin/uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8888"]
+CMD ["poetry", "run", "uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8888"]
 
