@@ -27,5 +27,6 @@ async def get_health() -> JSONResponse:
         base_url="https://example.com",
         zoho_accounts_url="https://example.com",
     )
-    print(zoho_crm.log_id)
+    print(f"{zoho_crm.log_id} - {zoho_crm.app_name}")
+    print(await zoho_crm.token)  # Should fail
     return JSONResponse(status_code=200, content={"message": "Success"})
