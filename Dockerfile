@@ -2,7 +2,7 @@
 FROM python:3.12-slim AS build-stage
 
 # Set up non-root user and drop root permissions for build stage
-ENV USER builduser
+ENV USER=builduser
 RUN useradd -ms /bin/bash "${USER}"
 USER ${USER}
 WORKDIR /home/${USER}
@@ -24,6 +24,8 @@ COPY --chown=${USER}:${USER} poetry.lock ./
 
 # Install dependencies
 RUN pip install --disable-pip-version-check poetry && \
+    export PATH="${HOME}/.local/bin:$PATH" && \
+    poetry --version && \
     poetry config virtualenvs.in-project true && \
     poetry install --no-root --no-interaction --no-ansi
 
@@ -31,7 +33,7 @@ RUN pip install --disable-pip-version-check poetry && \
 FROM python:3.12-slim AS final-stage
 
 # Set up non-root user and drop root permissions for final stage
-ENV USER finalbuilduser
+ENV USER=finalbuilduser
 RUN useradd -ms /bin/bash "${USER}"
 USER ${USER}
 WORKDIR /home/${USER}
