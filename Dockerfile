@@ -27,6 +27,8 @@ COPY . /app/
 # Install dependencies using Poetry
 RUN poetry install --no-root --no-interaction --no-ansi
 
+RUN echo "Checking Poetry location..." && find /root -name "poetry" -type f
+
 # Stage 2: Final stage
 FROM python:3.12-slim AS final
 
