@@ -48,7 +48,10 @@ ENV LOGLEVEL="DEBUG"
 ENV PORT=8888
 ENV HOST=0.0.0.0
 
-ENV PATH="/app/.venv/bin:/home/${USER}/.local/bin:$PATH"
+# Copy the Poetry installation from build, and set its location to the path
+COPY --from=build /root/.local /home/${USER}/.local
+ENV PATH="/home/${USER}/.local/bin:$PATH"
+# ENV PATH="/app/.venv/bin:/home/${USER}/.local/bin:$PATH"
 
 # Run the app
 CMD poetry run uvicorn app.main:app --host $HOST --port $PORT \
