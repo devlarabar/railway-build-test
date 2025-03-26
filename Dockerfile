@@ -48,6 +48,7 @@ COPY --from=build-stage /home/builduser /home/${USER}
 RUN chown -R ${USER}:${USER} /home/${USER}/app
 # RUN chown -R ${USER}:${USER} /home/${USER}/.local/bin
 
+RUN pwd
 RUN dir
 RUN ls /home/${USER}
 
@@ -61,7 +62,7 @@ WORKDIR /home/${USER}
 # Make sure final stage has correct paths for Poetry and .venv
 # ENV VIRTUAL_ENV="/home/${USER}/app/.venv"
 # ENV PATH="/home/${USER}/.local/bin:$PATH"
-ENV PATH="/home/${USER}/.venv/bin:$PATH"
+ENV PATH="./bin:$PATH"
 
 # Expose the port and set environment variables
 EXPOSE 8888
