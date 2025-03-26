@@ -39,10 +39,12 @@ ENV USER=finalbuilduser
 RUN useradd -ms /bin/bash "${USER}"
 
 # Copy the necessary files from the build stage (without sensitive build data)
-COPY --from=build-stage /home/builduser/app /home/${USER}/app
-COPY --from=build-stage /home/builduser/.local/bin /home/${USER}/.local/bin
+
+COPY --from=build-stage /home/builduser /home/${USER}
+# COPY --from=build-stage /home/builduser/app /home/${USER}/app
+# COPY --from=build-stage /home/builduser/.local/bin /home/${USER}/.local/bin
 RUN chown -R ${USER}:${USER} /home/${USER}/app
-RUN chown -R ${USER}:${USER} /home/${USER}/.local/bin
+# RUN chown -R ${USER}:${USER} /home/${USER}/.local/bin
 
 # Switch to non-root user
 USER ${USER}
