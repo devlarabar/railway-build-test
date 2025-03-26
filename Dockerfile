@@ -26,6 +26,9 @@ FROM python:3.12-slim AS final-stage
 
 # Create a non-root user
 RUN useradd -m appuser
+# Change ownership of /app to appuser
+RUN chown -R appuser:appuser /app
+# Now, switch to the non-root user
 USER appuser
 
 # Set the working directory for the final stage
