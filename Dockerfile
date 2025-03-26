@@ -24,18 +24,18 @@ RUN poetry config virtualenvs.in-project true && \
 # Stage 2: Final stage
 FROM python:3.12-slim AS final-stage
 
+# Set the working directory for the final stage
+WORKDIR /app
+
+# Copy the necessary files from the build stage (without sensitive build data)
+COPY --from=build-stage /app /app
+
 # Create a non-root user
 RUN useradd -m appuser
 # Change ownership of /app to appuser
 RUN chown -R appuser:appuser /app
 # Now, switch to the non-root user
 USER appuser
-
-# Set the working directory for the final stage
-WORKDIR /app
-
-# Copy the necessary files from the build stage (without sensitive build data)
-COPY --from=build-stage /app /app
 
 # Expose the port and set environment variables
 EXPOSE 8888
