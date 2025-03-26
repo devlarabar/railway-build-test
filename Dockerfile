@@ -48,10 +48,11 @@ ENV LOGLEVEL="DEBUG"
 ENV PORT=8888
 ENV HOST=0.0.0.0
 
-# Copy Poetry from build stage
-COPY --from=build /usr/local/bin/poetry /usr/local/bin/poetry
-COPY --from=build /root/.local /root/.local
-ENV PATH="/root/.local/bin:$PATH"
+# Copy Poetry's installed dependencies (whole directory)
+COPY --from=build /root/.local /home/${USER}/.local
+
+# Ensure Poetry is in the path
+ENV PATH="/home/${USER}/.local/bin:$PATH"
 
 # Debug Poetry installation
 RUN which poetry && ls -al $(which poetry) && poetry --version
