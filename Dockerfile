@@ -15,7 +15,7 @@ ARG POETRY_HTTP_BASIC_DUMMYPYPI_USERNAME
 RUN echo $POETRY_HTTP_BASIC_DUMMYPYPI_USERNAME
 
 # Copy the pyproject.toml and poetry.lock to configure dependencies
-COPY pyproject.toml poetry.lock /app/
+COPY . /app/
 
 # Install dependencies
 RUN poetry config virtualenvs.in-project true && \
