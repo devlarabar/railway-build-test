@@ -23,7 +23,7 @@ COPY --chown=${USER}:${USER} pyproject.toml ./
 COPY --chown=${USER}:${USER} poetry.lock ./
 
 # Install dependencies
-RUN pip install --disable-pip-version-check --user poetry && \
+RUN pip install --disable-pip-version-check poetry && \
     poetry config virtualenvs.in-project true && \
     poetry install --no-root --no-interaction --no-ansi
 
@@ -40,7 +40,8 @@ WORKDIR /home/${USER}
 # WORKDIR /app
 
 # Copy the necessary files from the build stage (without sensitive build data)
-COPY --from=build-stage /app /app
+COPY --from=build-stage /home/builduser /home/${USER}
+RUN chown -R ${USER}:${USER} /home/${USER}
 
 # Expose the port and set environment variables
 EXPOSE 8888
@@ -52,4 +53,4 @@ RUN echo $POETRY_HTTP_BASIC_DUMMYPYPI_USERNAME
 
 # Run the app
 # CMD poetry run uvicorn app.main:app --host $HOST --port $PORT --header servicename:railway-build-test --lifespan on
-CMD /app/.venv/bin/uvicorn app.main:app --host $HOST --port $PORT
+CMD /home/${USER}/.venv/bin/uvicorn app.main:app --host $HOST --port $PORT
