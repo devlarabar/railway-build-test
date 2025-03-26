@@ -43,6 +43,9 @@ RUN chown -R ${USER}:${USER} /home/${USER}/app
 USER ${USER}
 WORKDIR /home/${USER}
 
+RUN ls -la /home/${USER}/app
+RUN ls -la /home/${USER}/app/.venv
+
 # Set the working directory for the final stage
 # WORKDIR /app
 
