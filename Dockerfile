@@ -31,18 +31,20 @@ RUN pip install --disable-pip-version-check poetry && \
 # Stage 2: Final stage
 FROM python:3.12-slim AS final-stage
 
-# Set up non-root user and drop root permissions for final stage
+# Set up non-root user for the final stage
 ENV USER=finalbuilduser
 RUN useradd -ms /bin/bash "${USER}"
+
+# Copy the necessary files from the build stage (without sensitive build data)
+COPY --from=build-stage /home/builduser/app /home/${USER}/app
+RUN chown -R ${USER}:${USER} /home/${USER}/app
+
+# Switch to non-root user
 USER ${USER}
 WORKDIR /home/${USER}
 
 # Set the working directory for the final stage
 # WORKDIR /app
-
-# Copy the necessary files from the build stage (without sensitive build data)
-COPY --from=build-stage /home/builduser/app /home/${USER}/app
-RUN chown -R ${USER}:${USER} /home/${USER}/app
 
 # Make sure final stage has correct paths for Poetry and .venv
 ENV VIRTUAL_ENV="/home/${USER}/.venv"
