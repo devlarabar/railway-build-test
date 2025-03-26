@@ -24,6 +24,7 @@ COPY --chown=${USER}:${USER} poetry.lock ./
 
 # Install dependencies
 RUN pip install --disable-pip-version-check poetry && \
+    export PATH="/home/${USER}/.local/bin:$PATH" && \
     poetry config virtualenvs.in-project true && \
     poetry install --no-root --no-interaction --no-ansi
 
