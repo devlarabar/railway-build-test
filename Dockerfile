@@ -18,10 +18,15 @@ RUN echo $POETRY_HTTP_BASIC_DUMMYPYPI_USERNAME
 COPY pyproject.toml poetry.lock /app/
 
 # Install dependencies
-RUN poetry install --no-root --no-interaction --no-ansi
+RUN poetry config virtualenvs.in-project true && \
+    poetry install --no-root --no-interaction --no-ansi
 
 # Stage 2: Final stage
 FROM python:3.12-slim AS final-stage
+
+# Create a non-root user
+RUN useradd -m appuser
+USER appuser
 
 # Set the working directory for the final stage
 WORKDIR /app
@@ -38,7 +43,8 @@ ENV HOST=0.0.0.0
 RUN echo $POETRY_HTTP_BASIC_DUMMYPYPI_USERNAME
 
 # Install Poetry (again), because it's not accessible here from the first stage
-RUN pip install poetry
+# RUN pip install poetry
 
 # Run the app
-CMD poetry run uvicorn app.main:app --host $HOST --port $PORT --header servicename:railway-build-test --lifespan on
+# CMD poetry run uvicorn app.main:app --host $HOST --port $PORT --header servicename:railway-build-test --lifespan on
+CMD /app/.venv/bin/uvicorn app.main:app --host $HOST --port $PORT
