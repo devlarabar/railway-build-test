@@ -44,6 +44,11 @@ WORKDIR /home/${USER}
 COPY --from=build-stage /home/builduser /home/${USER}
 RUN chown -R ${USER}:${USER} /home/${USER}
 
+# Make sure final stage has correct paths for Poetry and .venv
+ENV PATH="/home/${USER}/.local/bin:$PATH"
+ENV VIRTUAL_ENV="/home/${USER}/.venv"
+ENV PATH="$VIRTUAL_ENV/bin:$PATH"
+
 # Expose the port and set environment variables
 EXPOSE 8888
 ENV LOGLEVEL="DEBUG"
@@ -54,4 +59,4 @@ RUN echo $POETRY_HTTP_BASIC_DUMMYPYPI_USERNAME
 
 # Run the app
 # CMD poetry run uvicorn app.main:app --host $HOST --port $PORT --header servicename:railway-build-test --lifespan on
-CMD /home/${USER}/.venv/bin/uvicorn app.main:app --host $HOST --port $PORT
+CMD /home/${USER}/.local/bin/poetry run uvicorn app.main:app --host $HOST --port $PORT
