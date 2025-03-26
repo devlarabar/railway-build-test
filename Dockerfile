@@ -55,7 +55,8 @@ WORKDIR /home/${USER}
 
 # Make sure final stage has correct paths for Poetry and .venv
 # ENV VIRTUAL_ENV="/home/${USER}/app/.venv"
-ENV PATH="/home/${USER}/.local/bin:$PATH"
+# ENV PATH="/home/${USER}/.local/bin:$PATH"
+ENV PATH="/home/${USER}/.venv/bin:$PATH"
 
 # Expose the port and set environment variables
 EXPOSE 8888
