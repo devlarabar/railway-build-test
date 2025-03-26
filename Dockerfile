@@ -18,7 +18,7 @@ COPY --chown=${USER}:${USER} poetry.lock ./
 # Configure Poetry
 ARG POETRY_HTTP_BASIC_NUCLEUS_USERNAME
 ARG POETRY_HTTP_BASIC_NUCLEUS_PASSWORD
-ARG VIRTUAL_ENVIRONMENT_PATH="/home/${USER}/app/.venv"
+# ARG VIRTUAL_ENVIRONMENT_PATH="/home/${USER}/app/.venv"
 ARG POETRY_VIRTUALENVS_IN_PROJECT=true
 
 # Debugging
@@ -39,20 +39,20 @@ RUN useradd -ms /bin/bash "${USER}"
 
 # Copy the necessary files from the build stage (without sensitive build data)
 COPY --from=build-stage /home/builduser/app /home/${USER}/app
+COPY --from=build-stage /home/builduser/.local/bin /home/${USER}/.local/bin
 RUN chown -R ${USER}:${USER} /home/${USER}/app
+RUN chown -R ${USER}:${USER} /home/${USER}/.local/bin
 
 # Switch to non-root user
 USER ${USER}
 WORKDIR /home/${USER}
 
-RUN ls -la /home/${USER}/app
-
 # Set the working directory for the final stage
 # WORKDIR /app
 
 # Make sure final stage has correct paths for Poetry and .venv
-ENV VIRTUAL_ENV="/home/${USER}/app/.venv"
-ENV PATH="/home/${USER}/app/.venv/bin:$PATH"
+# ENV VIRTUAL_ENV="/home/${USER}/app/.venv"
+ENV PATH="/home/${USER}/.local/bin:$PATH"
 
 # Expose the port and set environment variables
 EXPOSE 8888
