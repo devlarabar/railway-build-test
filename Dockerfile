@@ -20,6 +20,7 @@ ARG POETRY_HTTP_BASIC_NUCLEUS_USERNAME
 ARG POETRY_HTTP_BASIC_NUCLEUS_PASSWORD
 # ARG VIRTUAL_ENVIRONMENT_PATH="/home/${USER}/app/.venv"
 ARG POETRY_VIRTUALENVS_IN_PROJECT=true
+ARG POETRY_VIRTUALENVS_OPTIONS_NO_PIP=true
 
 # Debugging
 ARG POETRY_HTTP_BASIC_DUMMYPYPI_USERNAME
@@ -30,6 +31,7 @@ ENV PATH="/home/${USER}/.local/bin:$PATH"
 RUN pip install --disable-pip-version-check poetry && \
     poetry install --no-root --no-interaction --no-ansi
 
+RUN poetry env info --path
 
 # Stage 2: Final stage
 FROM python:3.12-slim AS final-stage
@@ -45,6 +47,9 @@ COPY --from=build-stage /home/builduser /home/${USER}
 # COPY --from=build-stage /home/builduser/.local/bin /home/${USER}/.local/bin
 RUN chown -R ${USER}:${USER} /home/${USER}/app
 # RUN chown -R ${USER}:${USER} /home/${USER}/.local/bin
+
+RUN dir
+RUN ls /home/${USER}
 
 # Switch to non-root user
 USER ${USER}
