@@ -34,7 +34,7 @@ FROM python:3.12-slim AS final
 WORKDIR /app
 
 # Copy the necessary files from the build stage
-COPY --from=build-stage /app /app
+COPY --from=build /app /app
 
 # Create a non-root user, pass them ownership of /app, and switch to this user
 RUN useradd -m appuser
