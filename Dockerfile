@@ -80,6 +80,8 @@ ENV HOST=0.0.0.0
 
 RUN echo $POETRY_HTTP_BASIC_DUMMYPYPI_USERNAME
 
+RUN echo "Poetry version:" && poetry --version
+
 # Run the app
 # CMD poetry run uvicorn app.main:app --host $HOST --port $PORT --header servicename:railway-build-test --lifespan on
 CMD ["poetry", "run", "uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8888"]
