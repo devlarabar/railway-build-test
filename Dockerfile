@@ -48,8 +48,8 @@ ENV LOGLEVEL="DEBUG"
 ENV PORT=8888
 ENV HOST=0.0.0.0
 
-# Set Poetry's location in PATH
-ENV PATH="/usr/local/bin:$PATH"
+# Install Poetry again - it's no longer available after initiating a new stage
+RUN pip install poetry
 
 # Run the app
 CMD poetry run uvicorn app.main:app --host $HOST --port $PORT \
