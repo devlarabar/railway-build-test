@@ -41,8 +41,8 @@ WORKDIR /home/${USER}
 # WORKDIR /app
 
 # Copy the necessary files from the build stage (without sensitive build data)
-COPY --from=build-stage /home/builduser /home/${USER}
-RUN chown -R ${USER}:${USER} /home/${USER}
+COPY --from=build-stage /home/builduser/app /home/${USER}/app
+RUN chown -R ${USER}:${USER} /home/${USER}/app
 
 # Make sure final stage has correct paths for Poetry and .venv
 ENV VIRTUAL_ENV="/home/${USER}/.venv"
