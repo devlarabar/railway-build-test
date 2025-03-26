@@ -27,11 +27,6 @@ COPY . /app/
 # Install dependencies using Poetry
 RUN poetry install --no-root --no-interaction --no-ansi
 
-RUN echo "Checking Poetry location..." && find /root -name "poetry" -type f
-
-RUN which poetry && ls -al $(which poetry)
-
-
 # Stage 2: Final stage
 FROM python:3.12-slim AS final
 
@@ -53,12 +48,8 @@ ENV LOGLEVEL="DEBUG"
 ENV PORT=8888
 ENV HOST=0.0.0.0
 
-# Copy Poetry and make sure it's executable
-COPY --from=build /root/.local /home/${USER}/.local
-RUN chmod +x /home/${USER}/.local/bin/poetry
-
 # Set Poetry's location in PATH
-ENV PATH="/home/${USER}/.local/bin:$PATH"
+ENV PATH="/usr/local/bin:$PATH"
 
 # Run the app
 CMD poetry run uvicorn app.main:app --host $HOST --port $PORT \
