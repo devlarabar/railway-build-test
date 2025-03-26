@@ -32,9 +32,9 @@ COPY --from=build-stage /app /app
 
 # Create a non-root user
 RUN useradd -m appuser
-# Change ownership of /app to appuser
+# Change ownership of /app to non-root user
 RUN chown -R appuser:appuser /app
-# Now, switch to the non-root user
+# Switch to the non-root user
 USER appuser
 
 # Expose the port and set environment variables
