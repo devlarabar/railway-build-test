@@ -19,4 +19,4 @@ print("Hello, world!")
 async def get_health() -> JSONResponse:
     """Perform all health checks for the service to ensure stability"""
     print("Running health checks...")
-    return JSONResponse(status_code=200, content="Success")
+    return JSONResponse(status_code=200, content={"message": "Success"})
