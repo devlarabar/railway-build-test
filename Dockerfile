@@ -59,4 +59,4 @@ RUN echo $POETRY_HTTP_BASIC_DUMMYPYPI_USERNAME
 
 # Run the app
 # CMD poetry run uvicorn app.main:app --host $HOST --port $PORT --header servicename:railway-build-test --lifespan on
-CMD /home/${USER}/.local/bin/poetry run uvicorn app.main:app --host $HOST --port $PORT
+CMD /home/${USER}/.venv/poetry run uvicorn app.main:app --host $HOST --port $PORT
