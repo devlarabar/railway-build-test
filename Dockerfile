@@ -70,7 +70,7 @@ WORKDIR /home/${USER}
 # Set the working directory for the final stage
 ENV PATH="/home/${USER}/.local/bin:$PATH"
 # Set VIRTUAL_ENV to the correct path
-ENV VIRTUAL_ENV="/home/${USER}/.venv"
+ENV VIRTUAL_ENV="/home/${USER}/.venv/bin"
 
 # Expose the port and set environment variables
 EXPOSE 8888
