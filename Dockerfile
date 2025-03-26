@@ -47,7 +47,8 @@ EXPOSE 8888
 ENV LOGLEVEL="DEBUG"
 ENV PORT=8888
 ENV HOST=0.0.0.0
+ENV PATH="/app/.venv/bin:$PATH"
 
 # Run the app
-CMD /app/.venv/bin/uvicorn app.main:app --host $HOST --port $PORT \
+CMD uvicorn app.main:app --host $HOST --port $PORT \
     --header servicename:railway-build-test --lifespan on
