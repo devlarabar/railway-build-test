@@ -49,7 +49,8 @@ ENV PORT=8888
 ENV HOST=0.0.0.0
 
 # Install Poetry again - it's no longer available after initiating a new stage
-RUN pip install poetry
+RUN pip install poetry && which poetry && ls -al $(which poetry)
+ENV PATH="/usr/local/bin:$PATH"
 
 # Run the app
 CMD poetry run uvicorn app.main:app --host $HOST --port $PORT \
