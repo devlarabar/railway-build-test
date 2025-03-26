@@ -85,6 +85,8 @@ RUN echo "Poetry version:" && poetry --version
 RUN poetry show uvicorn
 RUN echo "Uvicorn version:" && /home/${USER}/.venv/bin/uvicorn --version
 
+RUN python -c "import sys; print('\n'.join(sys.path))"
+
 # Run the app
 # CMD poetry run uvicorn app.main:app --host $HOST --port $PORT --header servicename:railway-build-test --lifespan on
 CMD ["/home/${USER}/.venv/bin/uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8888"]
