@@ -35,6 +35,8 @@ RUN poetry env info --path
 
 RUN ls -al /home/${USER}/ && echo 'print venv?'
 
+RUN poetry show uvicorn
+
 
 # Stage 2: Final stage
 FROM python:3.12-slim AS final-stage
@@ -80,6 +82,7 @@ ENV HOST=0.0.0.0
 RUN echo $POETRY_HTTP_BASIC_DUMMYPYPI_USERNAME
 
 RUN echo "Poetry version:" && poetry --version
+RUN poetry show uvicorn
 RUN echo "Uvicorn version:" && poetry run uvicorn --version
 
 # Run the app
