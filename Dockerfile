@@ -28,6 +28,9 @@ RUN pip install --disable-pip-version-check poetry && \
     poetry config virtualenvs.in-project true && \
     poetry install --no-root --no-interaction --no-ansi
 
+RUN which poetry
+
+
 # Stage 2: Final stage
 FROM python:3.12-slim AS final-stage
 
@@ -44,7 +47,7 @@ USER ${USER}
 WORKDIR /home/${USER}
 
 RUN ls -la /home/${USER}/app
-RUN ls -la /home/${USER}/app/.venv
+RUN ls -la /home/${USER}/.venv
 
 # Set the working directory for the final stage
 # WORKDIR /app
