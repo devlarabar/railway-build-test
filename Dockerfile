@@ -83,9 +83,9 @@ RUN echo $POETRY_HTTP_BASIC_DUMMYPYPI_USERNAME
 
 RUN echo "Poetry version:" && poetry --version
 RUN poetry show uvicorn
-RUN echo "Uvicorn version:" && poetry run uvicorn --version
+RUN echo "Uvicorn version:" && /home/${USER}/.venv/bin/uvicorn --version
 
 # Run the app
 # CMD poetry run uvicorn app.main:app --host $HOST --port $PORT --header servicename:railway-build-test --lifespan on
-CMD ["poetry", "run", "uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8888"]
+CMD ["/home/${USER}/.venv/bin/uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8888"]
 
