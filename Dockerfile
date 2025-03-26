@@ -24,6 +24,7 @@ ARG POETRY_VIRTUALENVS_IN_PROJECT=true
 # Debugging
 ARG POETRY_HTTP_BASIC_DUMMYPYPI_USERNAME
 RUN echo $POETRY_HTTP_BASIC_DUMMYPYPI_USERNAME
+ENV PATH="/home/${USER}/.local/bin:$PATH"
 
 # Install dependencies
 RUN pip install --disable-pip-version-check poetry && \
