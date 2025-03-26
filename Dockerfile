@@ -33,6 +33,9 @@ RUN pip install --disable-pip-version-check poetry && \
 
 RUN poetry env info --path
 
+RUN ls -al /home/${USER}/ && echo 'print venv?'
+
+
 # Stage 2: Final stage
 FROM python:3.12-slim AS final-stage
 
@@ -62,7 +65,7 @@ WORKDIR /home/${USER}
 # Make sure final stage has correct paths for Poetry and .venv
 # ENV VIRTUAL_ENV="/home/${USER}/app/.venv"
 # ENV PATH="/home/${USER}/.local/bin:$PATH"
-ENV PATH="./bin:$PATH"
+ENV PATH="/home/${USER}/.local/bin:$PATH"
 
 # Expose the port and set environment variables
 EXPOSE 8888
