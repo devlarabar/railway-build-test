@@ -10,22 +10,23 @@ WORKDIR /home/${USER}
 # Set the working directory
 # WORKDIR /app
 
-# Configure Nucleus
-ARG POETRY_HTTP_BASIC_NUCLEUS_USERNAME
-ARG POETRY_HTTP_BASIC_NUCLEUS_PASSWORD
-
-ARG POETRY_HTTP_BASIC_DUMMYPYPI_USERNAME
-RUN echo $POETRY_HTTP_BASIC_DUMMYPYPI_USERNAME
-
 # Copy local code to the container image
 COPY --chown=${USER}:${USER} app ./app
 COPY --chown=${USER}:${USER} pyproject.toml ./
 COPY --chown=${USER}:${USER} poetry.lock ./
 
+# Configure Poetry
+ARG POETRY_HTTP_BASIC_NUCLEUS_USERNAME
+ARG POETRY_HTTP_BASIC_NUCLEUS_PASSWORD
+ARG VIRTUAL_ENVIRONMENT_PATH="/home/${USER}/app/.venv"
+ARG POETRY_VIRTUALENVS_IN_PROJECT=true
+
+# Debugging
+ARG POETRY_HTTP_BASIC_DUMMYPYPI_USERNAME
+RUN echo $POETRY_HTTP_BASIC_DUMMYPYPI_USERNAME
+
 # Install dependencies
 RUN pip install --disable-pip-version-check poetry && \
-    export PATH="/home/${USER}/.local/bin:$PATH" && \
-    poetry config virtualenvs.in-project true && \
     poetry install --no-root --no-interaction --no-ansi
 
 
@@ -38,23 +39,20 @@ RUN useradd -ms /bin/bash "${USER}"
 
 # Copy the necessary files from the build stage (without sensitive build data)
 COPY --from=build-stage /home/builduser/app /home/${USER}/app
-COPY --from=build-stage /home/builduser/.venv /home/${USER}/.venv
 RUN chown -R ${USER}:${USER} /home/${USER}/app
-RUN chown -R ${USER}:${USER} /home/${USER}/.venv
 
 # Switch to non-root user
 USER ${USER}
 WORKDIR /home/${USER}
 
 RUN ls -la /home/${USER}/app
-RUN ls -la /home/${USER}/.venv
 
 # Set the working directory for the final stage
 # WORKDIR /app
 
 # Make sure final stage has correct paths for Poetry and .venv
-ENV VIRTUAL_ENV="/home/${USER}/.venv"
-ENV PATH="/home/${USER}/.local/bin"
+ENV VIRTUAL_ENV="/home/${USER}/app/.venv"
+ENV PATH="/home/${USER}/app/.venv/bin:$PATH"
 
 # Expose the port and set environment variables
 EXPOSE 8888
