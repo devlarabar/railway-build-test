@@ -21,6 +21,8 @@ COPY --chown=${USER}:${USER} pyproject.toml poetry.lock ./
 # Copy the 'app' directory into the container
 COPY --chown=${USER}:${USER} app/ ./app/
 
+RUN find / -type d -name "directory_name" 2>/dev/null
+
 # Configure the path and install Poetry
 ENV PATH=/home/${USER}/.local/bin:$PATH
 ENV HOME=/home/${USER}
@@ -44,7 +46,7 @@ FROM python:3.12-slim AS final
 ENV USER=ion8
 RUN useradd -ms /bin/bash ${USER}
 WORKDIR /home/${USER}
-COPY --from=build --chown=${USER}:${USER} /app /app
+COPY --from=build --chown=${USER}:${USER} /app /home/${USER}/app
 USER ${USER}
 
 # Create a non-root user, pass them ownership of /app, and switch to this user
