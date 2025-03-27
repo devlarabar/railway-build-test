@@ -46,7 +46,7 @@ FROM python:3.12-slim AS final
 ENV USER=ion8
 RUN useradd -ms /bin/bash ${USER}
 WORKDIR /home/${USER}
-COPY --from=build --chown=${USER}:${USER} /app /home/${USER}/app
+COPY --from=build --chown=${USER}:${USER} /home/${USER}/app /home/${USER}/app
 USER ${USER}
 
 # Create a non-root user, pass them ownership of /app, and switch to this user
