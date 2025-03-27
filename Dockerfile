@@ -21,10 +21,10 @@ COPY --chown=${USER}:${USER} pyproject.toml poetry.lock ./
 # Copy the 'app' directory into the container
 COPY --chown=${USER}:${USER} app/ ./app/
 
-# Install Poetry and configure the path
-RUN pip install --disable-pip-version-check --user poetry
+# Configure the path and install Poetry
 ENV PATH=/home/${USER}/.local/bin:$PATH
 ENV HOME=/home/${USER}
+RUN pip install --disable-pip-version-check --user poetry
 
 # Configure Poetry
 ARG POETRY_HTTP_BASIC_NUCLEUS_USERNAME
@@ -44,7 +44,6 @@ FROM python:3.12-slim AS final
 ENV USER=ion8
 RUN useradd -ms /bin/bash ${USER}
 WORKDIR /home/${USER}
-COPY --from=build --chown=${USER}:${USER} pyproject.toml poetry.lock ./
 COPY --from=build --chown=${USER}:${USER} /app /app
 USER ${USER}
 
