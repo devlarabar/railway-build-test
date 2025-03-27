@@ -18,14 +18,11 @@ WORKDIR /home/${USER}
 
 # Copy the application and Poetry files into the container
 COPY --chown=${USER}:${USER} pyproject.toml poetry.lock ./
-# Copy the 'app' directory into the container
 COPY --chown=${USER}:${USER} app/ ./app/
 
-RUN ls -R
-
 # Configure the path and install Poetry
-ENV PATH=/home/${USER}/.local/bin:$PATH
-ENV HOME=/home/${USER}
+ENV PATH="/home/${USER}/.local/bin:$PATH"
+ENV HOME="/home/${USER}"
 RUN pip install --disable-pip-version-check --user poetry
 
 # Configure Poetry
@@ -39,10 +36,8 @@ RUN poetry install --no-root --no-interaction --no-ansi
 # Stage 2: Final stage
 FROM python:3.12-slim AS final
 
-# Set the working directory for the final stage
-# WORKDIR /app
-
-# Copy the necessary files from the build stage
+# Create a non-root user again (user from build stage is now inaccessible)
+# Copy the necessary files from the build stage, giving the new user ownership
 ENV USER=ion8
 RUN useradd -ms /bin/bash ${USER}
 WORKDIR /home/${USER}
@@ -50,18 +45,12 @@ COPY --from=build --chown=${USER}:${USER} /home/${USER}/app /home/${USER}/app
 COPY --from=build --chown=${USER}:${USER} /home/${USER}/.venv /home/${USER}/.venv
 USER ${USER}
 
-# Create a non-root user, pass them ownership of /app, and switch to this user
-# ENV USER appuser
-# RUN useradd -m ${USER}
-# RUN chown -R ${USER}:${USER} /app
-# USER ${USER}
-
-# Expose the port and set environment variables
-EXPOSE 8888
+# Set environment variables and expose the port
 ENV LOGLEVEL="DEBUG"
-ENV PORT=8888
 ENV HOST=0.0.0.0
 ENV PATH="/home/${USER}/.venv/bin:$PATH"
+ENV PORT=8888
+EXPOSE ${PORT}
 
 # Run the app
 CMD uvicorn app.main:app --host $HOST --port $PORT \
