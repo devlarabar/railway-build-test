@@ -21,7 +21,7 @@ COPY --chown=${USER}:${USER} pyproject.toml poetry.lock ./
 # Copy the 'app' directory into the container
 COPY --chown=${USER}:${USER} app/ ./app/
 
-RUN find / -type d -name "directory_name" 2>/dev/null
+RUN ls -R
 
 # Configure the path and install Poetry
 ENV PATH=/home/${USER}/.local/bin:$PATH
