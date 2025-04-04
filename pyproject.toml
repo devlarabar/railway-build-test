@@ -7,21 +7,21 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.12"
-zoho-clients = {version = "^1.4.0", source = "nucleus"}
+# zoho-clients = {version = "^1.4.0", source = "dummy"}
 passlib = "^1.7.4"
 dotenv = "^0.9.9"
 uvicorn = "^0.34.0"
 fastapi = "^0.115.12"
 
 
-[[tool.poetry.source]]
-name = "nucleus"
-url = "https://ion8-nucleus.up.railway.app/"
-priority = "primary"
+# [[tool.poetry.source]]
+# name = "dummy"
+# url = "https://laras-private-pypi.up.railway.app/"
+# priority = "primary"
 
-[[tool.poetry.source]]
-name = "PyPI"
-priority = "explicit"
+# [[tool.poetry.source]]
+# name = "PyPI"
+# priority = "explicit"
 
 [build-system]
 requires = ["poetry-core"]
